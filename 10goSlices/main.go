@@ -44,4 +44,13 @@ func main() {
 	sort.Ints(myArr)
 	fmt.Println("Sorted array", myArr)
 	fmt.Println("array after sorting", sort.IntsAreSorted(myArr))
+
+	//* how to remove a value from slice based on index
+
+	var bikes = []string{"Ducati Panigale v4", "Aprilia Rsv4", "Yamaha R1m", "Kawasaki zx10r", "Honda cbr fireblade RRR", "Mv Agusta f4"}
+	var indexToRemove int = 3
+	//* :indexToRemove slices from 0 to 2 , indexToRemove+1: slices from 4 to 5 , ... similar to spread operator
+	//* append method accepts multiple arguments
+	bikes = append(bikes[:indexToRemove], bikes[indexToRemove+1:]...)
+	fmt.Println(bikes)
 }
