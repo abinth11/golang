@@ -4,13 +4,18 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 func main() {
 	const apiBaseUrl string = "http://localhost:8080"
 	const getRequestUrl string = apiBaseUrl + "/get-message"
+	const postRequestUrl string = apiBaseUrl + "/save-user"
+	const postFormUlr string = apiBaseUrl + "/handle-post-form"
 	handleGetRequest(getRequestUrl)
+	handlePostRequest(postRequestUrl)
+	handlePostFormRequest(postFormUlr)
 }
 
 // handleGetRequest sends an HTTP GET request to the specified URL,
@@ -55,5 +60,60 @@ func handleGetRequest(baseUrl string) {
 		fmt.Println("Response Body:", responseString.String())
 	} else {
 		fmt.Printf("Request failed with status code: %d\n", response.StatusCode)
+	}
+}
+
+func handlePostRequest(baseUrl string) {
+	requestBody := strings.NewReader(`{
+		"name":"Jane Doe",
+		"age":"22",
+		"email":"jane@gmail.com"
+	}`)
+
+	response, err := http.Post(baseUrl, "application/json", requestBody)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusOK {
+		fmt.Println("Successful request")
+		responseContent, err := io.ReadAll(response.Body)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(responseContent))
+	} else {
+		fmt.Printf("Request failed with status code: %d\n", response.StatusCode)
+
+	}
+
+}
+
+func handlePostFormRequest(baseUrl string) {
+
+	body := url.Values{}
+	body.Add("username", "aizen233")
+	body.Add("password", "2323")
+
+	response, err := http.PostForm(baseUrl, body)
+
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusOK {
+		fmt.Println("Successful request")
+		responseContent, err := io.ReadAll(response.Body)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(responseContent))
+	} else {
+		fmt.Printf("Request failed with status code: %d\n", response.StatusCode)
+
 	}
 }
