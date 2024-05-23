@@ -10,6 +10,7 @@ func main() {
 	fmt.Println("Starting to encode JSON...")
 
 	enCodeJson()
+	decodeJson()
 }
 
 // user struct represents a user with fields for first name, last name,
@@ -95,4 +96,52 @@ func enCodeJson() {
 	fmt.Printf("%s\n", json)
 
 	fmt.Println(string(jsonData))
+}
+
+// decodeJson demonstrates decoding JSON data into a 'user' struct.
+// It takes a JSON byte slice, validates it, and unmarshals it into
+// a 'user' struct. It also demonstrates unmarshaling into a generic map
+// and printing the map's key-value pairs.
+func decodeJson() {
+	// JSON data obtained from an API.
+	jsonDataFromApi := []byte(`{
+		"firstName": "Alice",
+		"lastName": "Johnson",
+		"email": "alice@example.com",
+		"favoriteFoods": [
+		  "Pizza",
+		  "Sushi",
+		  "Ice Cream"
+		]
+	  }`)
+
+	var newUser user
+
+	// Validate the JSON data.
+	isValid := json.Valid(jsonDataFromApi)
+
+	if isValid {
+		fmt.Println("\nDecoding JSON:")
+		fmt.Println("JSON is valid")
+
+		// Unmarshal JSON data into 'newUser' struct.
+		err := json.Unmarshal(jsonDataFromApi, &newUser)
+		if err != nil {
+			log.Fatalf("Error decoding JSON: %s", err)
+		}
+		fmt.Printf("Decoded user struct: %#v\n", newUser)
+	} else {
+		log.Fatalf("Invalid JSON")
+	}
+
+	// Unmarshal JSON data into a generic map.
+	var userMap map[string]interface{}
+	err := json.Unmarshal(jsonDataFromApi, &userMap)
+	if err != nil {
+		log.Fatalf("Error decoding JSON to map: %s", err)
+	}
+	fmt.Println("Decoded map:")
+	for key, value := range userMap {
+		fmt.Printf("Key=%v, Value=%v , Type=%T\n", key, value, value)
+	}
 }
