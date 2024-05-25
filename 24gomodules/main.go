@@ -31,10 +31,10 @@ go run -mod=vendor main.go
 func main() {
 	fmt.Println("Server example")
 	r := mux.NewRouter()
-	r.HandleFunc("/", HandleHome).Methods("GET")
+	r.HandleFunc("/", homeHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":4000", r))
 }
 
-func HandleHome(w http.ResponseWriter, r *http.Request) {
+func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1>Response from server</h1>"))
 }
